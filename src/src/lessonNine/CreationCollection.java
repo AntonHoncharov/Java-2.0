@@ -13,8 +13,7 @@ public class CreationCollection implements List {
 
         Collection<String> firstCollections = firstCollections();
         Collection<String> secondCollections = secondCollections();
-
-
+        firstCollections.forEach(s -> System.out.println(s));
         System.out.println("__________ " + firstCollections.size());
 
         for (Iterator it = firstCollections.iterator(); it.hasNext(); ) {
