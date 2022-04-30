@@ -5,20 +5,46 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.ListIterator;
 
-public class LinkedList implements List {
+public class LinkedList<T> implements List {
+
+    private class Node<T> {
+        T value;
+        Node<T> next;
+
+        Node(T value) {
+            this.value = value;
+            this.next = null;
+        }
+    }
+
+    private Node<T> head = null;
 
     @Override
     public int size() {
-        return 0;
+        Node<T> p;
+        int size = 0;
+        for (p = head; p != null; p = p.next) {
+            size++;
+        }
+        return size;
     }
 
     @Override
     public boolean isEmpty() {
-        return false;
+        return size() == 0;
     }
 
     @Override
     public boolean contains(Object o) {
+        if (isEmpty()) {
+            return false;
+        }
+        Node<T> p;
+        for (p = head; p != null; p = p.next) {
+            if (p.value.equals(o)) {
+                return true;
+            }
+        }
         return false;
     }
 
@@ -29,7 +55,17 @@ public class LinkedList implements List {
 
     @Override
     public Object[] toArray() {
-        return new Object[0];
+        if (isEmpty()) {
+            return null;
+        }
+        int length = size(), i = 0;
+        Object[] a = new Object[length];
+        Node<T> p;
+        for (p = head; p != null; p = p.next) {
+            a[i] = p.value;
+            i++;
+        }
+        return a;
     }
 
     @Override
@@ -44,17 +80,45 @@ public class LinkedList implements List {
 
     @Override
     public boolean addAll(Collection c) {
-        return false;
+        if (c == null || c.size() == 0) {
+            return false;
+        }
+        Iterator it = c.iterator();
+        while (it.hasNext()) {
+            T o = (T) it.next();
+            add(o);
+        }
+        return true;
     }
 
     @Override
     public boolean addAll(int index, Collection c) {
+        if (c == null || c.size() == 0) {
+            return false;
+        }
+        if (isEmpty()) {
+            addAll(c);
+            return true;
+        }
+        if (index < -1) {
+            return true;
+        } else if (index >= size()) {
+            addAll(c);
+        } else {
+            int i = index;
+            Iterator it = c.iterator();
+            while (it.hasNext()) {
+                T o = (T) it.next();
+                add(i, o);
+                i++;
+            }
+        }
         return false;
     }
 
     @Override
     public void clear() {
-
+        head = null;
     }
 
     @Override
@@ -69,7 +133,6 @@ public class LinkedList implements List {
 
     @Override
     public void add(int index, Object element) {
-
     }
 
     @Override
@@ -79,12 +142,36 @@ public class LinkedList implements List {
 
     @Override
     public int indexOf(Object o) {
-        return 0;
+        int i = -1;
+        if (isEmpty()) {
+            return -1;
+        }
+        Node<T> p = head;
+        while (p != null) {
+            i++;
+            if (p.value.equals(o)) {
+                return i;
+            }
+            p = p.next;
+        }
+        return -1;
     }
 
     @Override
     public int lastIndexOf(Object o) {
-        return 0;
+        if (isEmpty()) {
+            return -1;
+        }
+        Node<T> p = head;
+        int i = -1, index = -1;
+        while (p != null) {
+            i++;
+            if (p.value.equals(o)) {
+                index = i;
+            }
+            p = p.next;
+        }
+        return index;
     }
 
     @Override
@@ -104,7 +191,19 @@ public class LinkedList implements List {
 
     @Override
     public boolean retainAll(Collection c) {
-        return false;
+        if (c == null || c.size() == 0) {
+            return false;
+        }
+        if (isEmpty()) {
+            return false;
+        }
+        Node<T> p;
+        Iterator it = c.iterator();
+        while (it.hasNext()) {
+            T o = (T) it.next();
+            remove(o);
+        }
+        return true;
     }
 
     @Override
